@@ -10,3 +10,26 @@ of writing your own CSS rules. For a full list of class names in the theme
 refer to http://docs.nativescript.org/ui/theme.
 */
 @import 'nativescript-theme-core/css/core.light.css';
+
+.action-bar {
+    background-color: #16a085;
+}
+
+.action-bar-title {
+    color: white;
+}
+
+.page {
+    background-color: #ecf0f1;
+}
+
+.btn-start-speak {
+    border-radius: 20;
+    height: 40;
+    color: white;
+    background-color: #16a085;
+}
+
+.text-box {
+    padding: 15;
+}

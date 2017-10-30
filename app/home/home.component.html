@@ -2,5 +2,11 @@
     <Label class="action-bar-title" text="Home"></Label>
 </ActionBar>
 
-<GridLayout class="page">
+<GridLayout class="page" rows="*, 60">
+    <StackLayout row="0">
+        <Label class="text-box" [text]="text" textWrap="true"></Label>
+    </StackLayout>
+    <StackLayout row="1">
+        <Button class="btn btn-start-speak" text="开始说话" (tap)="onClick()"></Button>
+    </StackLayout>
 </GridLayout>
