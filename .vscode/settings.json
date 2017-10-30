@@ -1,0 +1,6 @@
+{
+    "files.exclude": {
+        "app/**/*.js": true,
+        "output-apk": true
+    }
+}

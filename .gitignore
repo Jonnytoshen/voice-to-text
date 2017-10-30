@@ -1,0 +1,14 @@
+platforms
+node_modules
+lib
+debugger
+dist
+report
+output-apk
+
+app/**/*.map
+app/**/*.js
+
+.DS_Store
+**/*.log
+tags
