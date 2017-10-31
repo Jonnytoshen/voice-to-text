@@ -1,8 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, NgZone } from "@angular/core";
 import { android, AndroidApplication, } from 'application';
 import { Feedback, FeedbackType } from 'nativescript-feedback';
+import { LoadingIndicator } from 'nativescript-loading-indicator';
 
 declare var com;
+declare var org;
 
 @Component({
     selector: "Home",
@@ -13,13 +15,18 @@ export class HomeComponent implements OnInit {
 
     text: string = '请点击开始说话，进行语音录入！';
     feedback: Feedback;
+    loader: LoadingIndicator;
     mAsr: any;
     volume: number;
 
-    constructor() {
+    constructor(
+        private zone: NgZone
+    ) {
     }
     
     ngOnInit(): void {
+        this.feedback = new Feedback();
+        this.loader = new LoadingIndicator();
         com.iflytek.cloud.SpeechUtility.createUtility(android.currentContext, "appid=59f68853");
         this.mAsr = com.iflytek.cloud.SpeechRecognizer.createRecognizer(android.context, new com.iflytek.cloud.InitListener({
             onInit: (code: number) => {
@@ -49,12 +56,11 @@ export class HomeComponent implements OnInit {
             onResult: (result: any, isLast: boolean) => {
                 if (null != result) {
                     console.log("recognizer result：" + result.getResultString());
-                    let text: string = '';
-    
-                    // text = com.iflytek.speech.util.JsonParser.parseGrammarResult(result.getResultString());
-                    
+                    let text: string = this.parseGrammarResult(result.getResultString());                    
                     // 显示
-                    this.text = text;      
+                    this.zone.run(() => {
+                        this.text += text;      
+                    });
                     console.log("您说的是：" + text);        
                 } else {
                     console.log("recognizer result : null");
@@ -63,17 +69,37 @@ export class HomeComponent implements OnInit {
             onEndOfSpeech: () => {
                 // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
                 console.log("结束说话");
+                this.loader.hide();
             },
             onBeginOfSpeech: () => {
                 // 此回调表示：sdk内部录音机已经准备好了，用户可以开始语音输入
                 console.log("开始说话");
+                this.loader.show({ message: '咩，正在听您说话...' });
+                this.text = '';
             },
             onError: (error: any) => {
+                this.loader.hide();
+                this.feedback.error({ message: "onError Code："	+ error.getErrorCode() });
                 console.log("onError Code："	+ error.getErrorCode());
             },
             onEvent: (eventType: number, arg1: number, arg2: number, obj: any) => {
 
             }
         }));
+    }
+
+
+    parseGrammarResult(json: string): string {
+        let ret: string[] = [],
+            joResult: object = JSON.parse(json),
+            words: object[] = joResult['ws'];
+        for(let i = 0; i < words.length; i++) {
+            let items = words[i]['cw'];
+            for(let j = 0; j < items.length; j++) {
+                let obj = items[j];
+                ret.push(obj['w']);
+            }
+        }
+        return ret.join('');
     }
 }

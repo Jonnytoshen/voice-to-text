@@ -20,6 +20,7 @@
 		"@angular/router": "4.2.5",
 		"nativescript-angular": "4.2.0",
 		"nativescript-feedback": "^1.0.6",
+		"nativescript-loading-indicator": "^2.4.0",
 		"nativescript-theme-core": "1.0.4",
 		"reflect-metadata": "0.1.10",
 		"rxjs": "5.4.3",
